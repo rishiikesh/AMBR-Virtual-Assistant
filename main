@@ -1,3 +1,4 @@
+#import all for better working
 from urllib.parse import uses_query
 import pyttsx3
 import speech_recognition as sr
@@ -9,12 +10,15 @@ import smtplib
 import cv2
 
 print("Initializing your assistant")
+#user name
 MASTER="Rishi"
 
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
-rate = engine.getProperty('rate')   
-engine.setProperty('rate', 155) 
+rate = engine.getProperty('rate')
+#for changing pace of voice   
+engine.setProperty('rate', 155)
+#for voice 
 engine.setProperty('voice',voices[1].id)
 
 
@@ -22,6 +26,7 @@ def speak(text):
     engine.say(text)
     engine.runAndWait()
 
+#for greeting the user
 def wishMe():
     hour = datetime.datetime.now().hour
     print(hour)
@@ -36,6 +41,7 @@ def wishMe():
         speak("Good Evening"+MASTER)
 
 
+#for listening the user commands
 def takeCommand():
     r=sr.Recognizer()
     with sr.Microphone() as source:
@@ -53,12 +59,12 @@ def takeCommand():
     return query
 
 
-
 speak("Initializing AMBER....")
 wishMe()
-#speak("I am your AI...how may I help you?")
+speak("I am your A.I...how may I help you?")
 query=takeCommand()
 
+#for executing user commands
 if 'wikipedia' in query.lower():
     speak('Searching wikipedia...')
     query=query.replace("wikipedia", "")
@@ -78,23 +84,19 @@ elif 'open instagram' in query.lower():
     webbrowser.open("instagram.com")
 
 elif 'play music' in query.lower():
+    #user's music directory path
     songs_dir="C:\\Users\\rishi\\Music"
     songs=os.listdir(songs_dir)
     print(songs)
     os.startfile(os.path.join(songs_dir,songs[4]))
 
-elif 'open code' in query.lower():
-    codePath="C:\\Users\\rishi\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-    print(codePath)
-    os.startfile(codePath)
-
 elif 'open chrome' in query.lower():
     webbrowser.open("chrome.com")
 
-elif 'you' in query.lower():
+elif 'open camera' in query.lower():
     cap = cv2.VideoCapture(0)
 
-
+#for checking the camera
 if not cv2.VideoCapture(0).isOpened():
     raise IOError("Cannot open webcam")
 while True:
