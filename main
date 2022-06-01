@@ -1,0 +1,110 @@
+from urllib.parse import uses_query
+import pyttsx3
+import speech_recognition as sr
+import datetime
+import wikipedia
+import webbrowser
+import os
+import smtplib
+import cv2
+
+print("Initializing your assistant")
+MASTER="Rishi"
+
+engine=pyttsx3.init('sapi5')
+voices=engine.getProperty('voices')
+rate = engine.getProperty('rate')   
+engine.setProperty('rate', 155) 
+engine.setProperty('voice',voices[1].id)
+
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def wishMe():
+    hour = datetime.datetime.now().hour
+    print(hour)
+
+    if hour>=0 and hour<12:
+        speak("Good Morning"+MASTER)
+
+    elif hour>=12 and hour<18:
+        speak("Good Afternoon"+MASTER)
+
+    else:
+        speak("Good Evening"+MASTER)
+
+
+def takeCommand():
+    r=sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        audio=r.listen(source)
+
+    try:
+        print("Recognizing...")
+        query=r.recognize_google(audio,language='en-in')
+        print(f"user said:{query}\n")
+
+    except Exception as e:
+        print("Say that again")
+        query=None
+    return query
+
+
+
+speak("Initializing AMBER....")
+wishMe()
+#speak("I am your AI...how may I help you?")
+query=takeCommand()
+
+if 'wikipedia' in query.lower():
+    speak('Searching wikipedia...')
+    query=query.replace("wikipedia", "")
+    results=wikipedia.summary(query, sentences =2)
+    speak(results)
+
+elif 'open youtube' in query.lower():
+    webbrowser.open("youtube.com")
+
+elif 'open google' in query.lower():
+    webbrowser.open("google.com")
+
+elif 'open whatsapp' in query.lower():
+    webbrowser.open("whatsapp.com")
+
+elif 'open instagram' in query.lower():
+    webbrowser.open("instagram.com")
+
+elif 'play music' in query.lower():
+    songs_dir="C:\\Users\\rishi\\Music"
+    songs=os.listdir(songs_dir)
+    print(songs)
+    os.startfile(os.path.join(songs_dir,songs[4]))
+
+elif 'open code' in query.lower():
+    codePath="C:\\Users\\rishi\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+    print(codePath)
+    os.startfile(codePath)
+
+elif 'open chrome' in query.lower():
+    webbrowser.open("chrome.com")
+
+elif 'you' in query.lower():
+    cap = cv2.VideoCapture(0)
+
+
+if not cv2.VideoCapture(0).isOpened():
+    raise IOError("Cannot open webcam")
+while True:
+    ret, frame = cap.read()
+    frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    cv2.imshow('Input', frame)
+
+    c = cv2.waitKey(1)
+    if c == 27:
+        break
+
+cap.release()
+cv2.destroyAllWindows()
